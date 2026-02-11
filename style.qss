@@ -1,0 +1,82 @@
+QWidget {
+    font-size: %spx;
+    font-family: "MS Reference Sans Serif";
+    background: white; color: black;
+}
+
+QLineEdit, QComboBox, QDateEdit {
+    color: blue;
+    text-align: right;
+}
+
+QGroupBox {
+    color: red;
+}
+
+QLabel#bis, QLabel#drdo {
+    font-weight: bold;
+}
+
+QLabel#title {
+    font-size: %spx;
+    font-weight: bold;
+    color: red;
+}
+
+QLabel#lastUpd {
+    color: blue;
+}
+
+QPushButton#bluBtn {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #5B8DF6, stop:0.5 #357ABD, stop:1 #2851A3);
+    color: white;
+    padding: 12px 32px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1.1em;
+    border: none;
+}
+QPushButton#bluBtn:hover {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #6CA6FF, stop:0.5 #4A90E2, stop:1 #2E5C9A);
+}
+
+QPushButton#redBtn {
+    background: red; color: white;
+}
+
+#leftPane {
+    background: #e0e3ea;
+    border-radius: 24px;
+    padding: 40px 16px;
+    border: 1.5px solid #b0b3ba; /* subtle border for depth */
+}
+#leftPane QLabel {
+    background: transparent;
+}
+#spicWidget, #bisWidget, #bisWidget QLabel {
+    background: transparent;
+}
+#spicWidget, #bisWidget QLabel#bisLabel1 {
+    font-weight: bold;
+}
+
+QLabel#versionLabel {
+    font-size: 1.2em;
+    color: #555;
+}
+
+QLabel#spicLabel1 {
+    font-size: %spx;
+    color: #1565c0;
+    font-weight: bold;
+}
+
+QLabel#dashboardLabel {
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #333;
+    margin-top: 16px;
+    qproperty-alignment: 'AlignLeft';
+}
