@@ -36,50 +36,67 @@ def savePDF(csvFile, pdfFile):
             pdf_writer.setPageSizeMM(QtCore.QSizeF(297, 210))
         
         painter = QtGui.QPainter(pdf_writer)
-        font = QtGui.QFont("Times New Roman", 10)
-        painter.setFont(font)
+        
+        # Set up fonts
+        header_font = QtGui.QFont("Times New Roman", 11)
+        header_font.setBold(True)
+        content_font = QtGui.QFont("Times New Roman", 10)
+        
+        painter.setFont(content_font)
         
         # Set dimensions
         margin = 20
-        x = margin
-        y = margin
-        row_height = 40
+        page_width = pdf_writer.width()
+        page_height = pdf_writer.height()
+        available_width = page_width - (2 * margin)
+        available_height = page_height - (2 * margin)
         
-        # Calculate column widths based on number of columns
-        num_cols = len(readCSV[0]) if readCSV else 1
-        available_width = pdf_writer.width() - (2 * margin)
+        # Calculate column widths
+        num_cols = max(len(row) for row in readCSV) if readCSV else 1
         col_width = available_width / num_cols
         
-        page_height = pdf_writer.height() - (2 * margin)
+        # Calculate row height
+        metrics = QtGui.QFontMetrics(content_font)
+        row_height = metrics.height() + 50
+        
+        x = margin
+        y = margin
+        current_row = 0
         
         # Draw each row
-        for row_idx, row in enumerate(readCSV):
-            # Compute max height for the current row based on text wrapping
-            max_row_height = row_height
-            cell_texts = []
-            
-            for cell_idx, cell in enumerate(row):
-                text = str(cell)
-                rect = QtCore.QRectF(x + (cell_idx * col_width), y, col_width, 1000)
-                bounding_rect = painter.boundingRect(rect, QtCore.Qt.TextFlag.TextWordWrap, text)
-                max_row_height = max(max_row_height, bounding_rect.height() + 10)
-                cell_texts.append(text)
+        while current_row < len(readCSV):
+            row = readCSV[current_row]
             
             # Check if we need a new page
-            if y + max_row_height > page_height:
+            if y + row_height > available_height:
                 pdf_writer.newPage()
                 y = margin
             
-            # Draw each cell
-            for col_idx, text in enumerate(cell_texts):
-                cell_rect = QtCore.QRectF(x + (col_idx * col_width), y, col_width, max_row_height)
+            # Draw each cell in the row
+            for col_idx in range(num_cols):
+                cell_text = row[col_idx] if col_idx < len(row) else ""
+                cell_rect = QtCore.QRectF(x + (col_idx * col_width), y, col_width, row_height)
+                
+                # Draw cell border
                 painter.drawRect(cell_rect)
-                painter.drawText(cell_rect, QtCore.Qt.TextFlag.TextWordWrap | QtCore.Qt.AlignmentFlag.AlignCenter, text)
+                
+                # Draw cell text
+                text_rect = cell_rect.adjusted(4, 2, -4, -2)
+                
+                # Use bold font for header row
+                if current_row == 0 or (len(readCSV) > 1 and current_row == len(readCSV) - 1):
+                    painter.setFont(header_font)
+                else:
+                    painter.setFont(content_font)
+                
+                painter.drawText(text_rect, QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter, cell_text)
+                painter.setFont(content_font)
             
-            y += max_row_height
+            y += row_height
+            current_row += 1
         
         painter.end()
-        QMessageBox.information(None, "Success", "Your PDF file is saved successfully!")
+        # QMessageBox.information(None, "Success", "Your PDF file is saved successfully!")
         
     except Exception as e:
         QMessageBox.critical(None, "Error", f"Error saving PDF: {str(e)}")
