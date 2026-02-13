@@ -78,7 +78,7 @@ class TablePage(QWidget):
         topBtnLayout = QHBoxLayout()
         topBtnLayout.addStretch(1)
 
-        self.addColBtn = QPushButton("Add\nColumn", self)
+        self.addColBtn = QPushButton("Add Item", self)
         self.addColBtn.setObjectName("bluBtn")
         self.addColBtn.setMinimumHeight(int(height * 0.04))
         self.addColBtn.setMinimumWidth(int(width * 0.08))
@@ -86,7 +86,7 @@ class TablePage(QWidget):
         self.addColBtn.clicked.connect(self.addColumn)
         topBtnLayout.addWidget(self.addColBtn)
 
-        self.addRowBtn = QPushButton("Add\nRow", self)
+        self.addRowBtn = QPushButton("Add Site", self)
         self.addRowBtn.setObjectName("bluBtn")
         self.addRowBtn.setMinimumHeight(int(height * 0.04))
         self.addRowBtn.setMinimumWidth(int(width * 0.08))
@@ -105,6 +105,7 @@ class TablePage(QWidget):
         self.table.setEditTriggers(QTableWidget.EditTrigger.AnyKeyPressed)
         self.table.verticalHeader().setVisible(False)
         self.table.horizontalHeader().setVisible(False)
+        self.table.resizeColumnsToContents()
 
         scrollArea.setWidget(self.table)
         layout.addWidget(scrollArea, stretch=1)
@@ -153,7 +154,7 @@ class TablePage(QWidget):
                 self.table.setItem(i, j, item)
 
         # Set headers for the first row
-        self.table.item(0, 0).setText("Site/Item")
+        self.table.item(0, 0).setText("")
         self.table.item(0, 1).setText("I")
         self.table.item(0, 2).setText("Total")
 
@@ -183,8 +184,6 @@ class TablePage(QWidget):
         # Update Total column label to new position
         totalCol = self.table.columnCount() - 1
         self.table.item(0, totalCol).setText("Total")
-        if self.table.rowCount() > 0:
-            self.table.item(self.table.rowCount() - 1, totalCol).setText("Total")
 
         self.resizeColumns()
 
@@ -247,11 +246,13 @@ class TablePage(QWidget):
             for i, row in enumerate(rows):
                 for j, value in enumerate(row):
                     item = QTableWidgetItem(value)
+                    item.setFont(QtGui.QFont("Times New Roman"))
                     self.table.setItem(i, j, item)
 
                 # Fill empty cells in this row
                 for j in range(len(row), num_cols):
                     item = QTableWidgetItem("")
+                    item.setFont(QtGui.QFont("Times New Roman"))
                     self.table.setItem(i, j, item)
 
         except Exception as e:
@@ -296,7 +297,7 @@ class TablePage(QWidget):
                 for i in range(1, totalRow):  # Skip first row (headers)
                     cell_text = rows[i][j]
                     try:
-                        total += float(cell_text) if cell_text else 0
+                        total += int(cell_text) if cell_text else 0
                     except ValueError:
                         total += 0
                 rows[totalRow][j] = str(total)
@@ -307,7 +308,7 @@ class TablePage(QWidget):
                 for j in range(1, totalCol):  # Skip first column (headers)
                     cell_text = rows[i][j]
                     try:
-                        total += float(cell_text) if cell_text else 0
+                        total += int(cell_text) if cell_text else 0
                     except ValueError:
                         total += 0
                 rows[i][totalCol] = str(total)
@@ -318,7 +319,7 @@ class TablePage(QWidget):
                 for j in range(1, totalCol):
                     cell_text = rows[i][j]
                     try:
-                        grand_total += float(cell_text) if cell_text else 0
+                        grand_total += int(cell_text) if cell_text else 0
                     except ValueError:
                         grand_total += 0
             rows[totalRow][totalCol] = str(grand_total)
@@ -482,7 +483,7 @@ class Inventory(QMainWindow):
             try:
                 with open(csvFilePath, "w", newline="") as f:
                     writer = csv.writer(f)
-                    writer.writerow(["Site/Item", "I", "Total"])
+                    writer.writerow(["", "I", "Total"])
                     writer.writerow(["A", "1", "1"])
                     writer.writerow(["Total", "1", "1"])
 
