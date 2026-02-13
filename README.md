@@ -1,13 +1,13 @@
-# Fire Extinguisher Predictive Maintenance Software
+# Inventory Management Software
 
-This project is a modern, interactive desktop application for managing and analyzing fire extinguisher maintenance and reliability. It features:
+This project is a modern, interactive desktop application for managing inventory. It features:
 - A beautiful, responsive PyQt5 GUI
-- Easy entry and management of fire extinguisher and failure data
-- Predictive maintenance calculations and due date highlighting
-- Bar and pie chart visualizations
-- PDF export of extinguisher data (A4 landscape)
-- Modern UI/UX with theming, tooltips, and accessibility
-- Editable comboboxes for custom data entry
+- Easy creation and management of daily inventory tables.
+- Add new items and sites dynamically.
+- Automatic calculation of totals.
+- Data is saved in CSV format for easy access and portability.
+- Export inventory tables to PDF.
+- Modern UI/UX with theming, and accessibility.
 
 ## Usage
 
