@@ -9,7 +9,7 @@ from savePDF import savePDF
 from PyQt5 import QtGui, QtCore
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QMessageBox, QLabel, QPushButton,
                              QTableWidget, QTableWidgetItem, QVBoxLayout, QHBoxLayout, QStackedWidget, 
-                             QSizePolicy, QGridLayout, QDialog, QDateEdit, QDialogButtonBox, QFrame, QScrollArea)
+                             QSizePolicy, QGridLayout, QDialog, QDateEdit, QDialogButtonBox, QFrame, QScrollArea, QTextEdit)
 
 center = QtCore.Qt.AlignmentFlag.AlignCenter
 today  = lambda: QtCore.QDate.currentDate()
@@ -62,6 +62,7 @@ class TablePage(QWidget):
         super().__init__(parent)
         self.currentDate = None
         self.csvFolder = "CSV"
+        self.txtFolder = "TXT"
 
         layout = QVBoxLayout(self)
 
@@ -73,6 +74,9 @@ class TablePage(QWidget):
         self.dateLabel.setAlignment(center)
         self.dateLabel.setObjectName("dateSubtitle")
         layout.addWidget(self.dateLabel)
+
+        mainBodyLayout = QHBoxLayout()
+        leftVLayout = QVBoxLayout()
 
         # Add Column/Row buttons layout (above table)
         topBtnLayout = QHBoxLayout()
@@ -95,7 +99,7 @@ class TablePage(QWidget):
         topBtnLayout.addWidget(self.addRowBtn)
 
         topBtnLayout.addStretch(1)
-        layout.addLayout(topBtnLayout)
+        leftVLayout.addLayout(topBtnLayout)
 
         # Scrollable table area
         scrollArea = QScrollArea(self)
@@ -108,7 +112,23 @@ class TablePage(QWidget):
         self.table.resizeColumnsToContents()
 
         scrollArea.setWidget(self.table)
-        layout.addWidget(scrollArea, stretch=1)
+        leftVLayout.addWidget(scrollArea, stretch=1)
+
+        rightVLayout = QVBoxLayout()
+        
+        remarksLabel = QLabel("Remarks", self)
+        remarksLabel.setAlignment(center)
+        remarksLabel.setFont(QtGui.QFont("", int(width * 0.012), QtGui.QFont.Weight.Bold))
+        rightVLayout.addWidget(remarksLabel)
+        
+        self.remarksEdit = QTextEdit(self)
+        self.remarksEdit.setFont(QtGui.QFont("", int(width * 0.011)))
+        rightVLayout.addWidget(self.remarksEdit, stretch=1)
+
+        mainBodyLayout.addLayout(leftVLayout, 3)
+        mainBodyLayout.addLayout(rightVLayout, 1)
+
+        layout.addLayout(mainBodyLayout, stretch=1)
 
         # Bottom button layout
         btnLayout = QHBoxLayout()
@@ -220,6 +240,18 @@ class TablePage(QWidget):
         self.dateLabel.setText(dateStr)
 
         csvFilePath = os.path.join(self.csvFolder, f"{dateStr}.csv")
+        txtFilePath = os.path.join(self.txtFolder, f"{dateStr}.txt")
+
+        # Load Remarks
+        if os.path.exists(txtFilePath):
+            try:
+                with open(txtFilePath, "r", encoding="utf-8") as f:
+                    self.remarksEdit.setPlainText(f.read())
+            except Exception as e:
+                print(f"Error loading remarks: {e}")
+                self.remarksEdit.clear()
+        else:
+            self.remarksEdit.clear()
 
         if not os.path.exists(csvFilePath):
             self.initializeTable()
@@ -270,11 +302,19 @@ class TablePage(QWidget):
 
         dateStr = self.currentDate.toString("dd-MM-yyyy")
         csvFilePath = os.path.join(self.csvFolder, f"{dateStr}.csv")
+        txtFilePath = os.path.join(self.txtFolder, f"{dateStr}.txt")
 
-        # Create CSV folder if it doesn't exist
+        # Create necessary folders if they don't exist
         os.makedirs(self.csvFolder, exist_ok=True)
+        os.makedirs(self.txtFolder, exist_ok=True)
 
         try:
+            # Handle TXT saving
+            remarks_text = self.remarksEdit.toPlainText()
+            if os.path.exists(txtFilePath) or remarks_text != "":
+                with open(txtFilePath, "w", encoding="utf-8") as f:
+                    f.write(remarks_text)
+
             # Extract table data
             rows = []
             totalRow = self.table.rowCount() - 1
