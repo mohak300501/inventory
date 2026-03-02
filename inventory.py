@@ -3,7 +3,7 @@ inventory/inventory.py
 - Inventory Management Software
 """
 
-import sys, csv, os
+import sys, csv, os, re
 from pathlib import Path
 from savePDF import savePDF
 from PyQt5 import QtGui, QtCore
@@ -23,7 +23,6 @@ class HeadBar(QWidget):
         super().__init__(parent)
         layout = QHBoxLayout(self)
         titleLabel = QLabel("INVENTORY MANAGEMENT SOFTWARE", self)
-        titleLabel.setAlignment(center)
         titleLabel.setObjectName("title")
         layout.addWidget(titleLabel, alignment=center)
         self.setLayout(layout)
@@ -35,6 +34,8 @@ class DateSelector(QDialog):
         self.setWindowIcon(QtGui.QIcon(appcon))
 
         layout = QVBoxLayout(self)
+        layout.setSpacing(20)
+        layout.setContentsMargins(60, 40, 60, 40)
 
         # Date label
         label = QLabel("Select Date:", self)
@@ -71,7 +72,6 @@ class TablePage(QWidget):
 
         # Date subtitle
         self.dateLabel = QLabel("", self)
-        self.dateLabel.setAlignment(center)
         self.dateLabel.setObjectName("dateSubtitle")
         layout.addWidget(self.dateLabel)
 
@@ -84,17 +84,15 @@ class TablePage(QWidget):
 
         self.addColBtn = QPushButton("Add Item", self)
         self.addColBtn.setObjectName("bluBtn")
-        self.addColBtn.setMinimumHeight(int(height * 0.04))
-        self.addColBtn.setMinimumWidth(int(width * 0.08))
-        self.addColBtn.setFont(QtGui.QFont("", int(width * 0.009)))
         self.addColBtn.clicked.connect(self.addColumn)
         topBtnLayout.addWidget(self.addColBtn)
+        
+        tableLabel = QLabel("Table", self)
+        tableLabel.setObjectName("redLbl")
+        topBtnLayout.addWidget(tableLabel)
 
         self.addRowBtn = QPushButton("Add Site", self)
         self.addRowBtn.setObjectName("bluBtn")
-        self.addRowBtn.setMinimumHeight(int(height * 0.04))
-        self.addRowBtn.setMinimumWidth(int(width * 0.08))
-        self.addRowBtn.setFont(QtGui.QFont("", int(width * 0.009)))
         self.addRowBtn.clicked.connect(self.addRow)
         topBtnLayout.addWidget(self.addRowBtn)
 
@@ -117,12 +115,11 @@ class TablePage(QWidget):
         rightVLayout = QVBoxLayout()
         
         remarksLabel = QLabel("Remarks", self)
-        remarksLabel.setAlignment(center)
-        remarksLabel.setFont(QtGui.QFont("", int(width * 0.012), QtGui.QFont.Weight.Bold))
+        remarksLabel.setObjectName("redLbl")
         rightVLayout.addWidget(remarksLabel)
         
         self.remarksEdit = QTextEdit(self)
-        self.remarksEdit.setFont(QtGui.QFont("", int(width * 0.011)))
+        self.remarksEdit.setObjectName("remarksEdit")
         rightVLayout.addWidget(self.remarksEdit, stretch=1)
 
         mainBodyLayout.addLayout(leftVLayout, 3)
@@ -136,22 +133,16 @@ class TablePage(QWidget):
 
         self.saveTableBtn = QPushButton("Save Table", self)
         self.saveTableBtn.setObjectName("bluBtn")
-        self.saveTableBtn.setMinimumHeight(int(height * 0.05))
-        self.saveTableBtn.setFont(QtGui.QFont("", int(width * 0.011)))
         self.saveTableBtn.clicked.connect(self.saveTable)
         btnLayout.addWidget(self.saveTableBtn)
 
         backBtn = QPushButton("Back", self)
-        backBtn.setObjectName("bluBtn")
-        backBtn.setMinimumHeight(int(height * 0.05))
-        backBtn.setFont(QtGui.QFont("", int(width * 0.011)))
+        backBtn.setObjectName("redBtn")
         backBtn.clicked.connect(self.onBack)
         btnLayout.addWidget(backBtn)
 
         self.savePdfBtn = QPushButton("Save PDF", self)
         self.savePdfBtn.setObjectName("bluBtn")
-        self.savePdfBtn.setMinimumHeight(int(height * 0.05))
-        self.savePdfBtn.setFont(QtGui.QFont("", int(width * 0.011)))
         self.savePdfBtn.clicked.connect(self.onSavePDF)
         btnLayout.addWidget(self.savePdfBtn)
 
@@ -278,13 +269,11 @@ class TablePage(QWidget):
             for i, row in enumerate(rows):
                 for j, value in enumerate(row):
                     item = QTableWidgetItem(value)
-                    item.setFont(QtGui.QFont("Times New Roman"))
                     self.table.setItem(i, j, item)
 
                 # Fill empty cells in this row
                 for j in range(len(row), num_cols):
                     item = QTableWidgetItem("")
-                    item.setFont(QtGui.QFont("Times New Roman"))
                     self.table.setItem(i, j, item)
 
         except Exception as e:
@@ -419,13 +408,11 @@ class MainPage(QWidget):
 
         # Title
         titleLabel = QLabel("INVENTORY MANAGEMENT SOFTWARE", right_widget)
-        titleLabel.setAlignment(center)
         titleLabel.setObjectName("title")
         right_layout.addWidget(titleLabel)
 
         # Dashboard label
         dash_label = QLabel("Dashboard", right_widget)
-        dash_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
         dash_label.setObjectName("dashboardLabel")
         right_layout.addWidget(dash_label)
 
@@ -433,15 +420,10 @@ class MainPage(QWidget):
         btnWidget = QWidget(right_widget)
         grid = QGridLayout(btnWidget)
         grid.setSpacing(int(height * 0.03))
-        button_size = int(height * 0.09)
-        font = QtGui.QFont()
-        font.setPointSize(int(width * 0.014))
 
         def make_btn(text, slot):
             btn = QPushButton(text, btnWidget)
-            btn.setObjectName("bluBtn")
-            btn.setMinimumHeight(button_size)
-            btn.setFont(font)
+            btn.setObjectName("menuBluBtn")
             btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
             btn.clicked.connect(slot)
             return btn
@@ -474,8 +456,7 @@ class LeftPane(QFrame):
         logo = QLabel(self)
         logo.setPixmap(QtGui.QPixmap(appcon))
         logo.setScaledContents(True)
-        logo.setFixedWidth(int(width * 0.13))
-        logo.setFixedHeight(int(width * 0.13))
+        logo.setObjectName("logo")
         layout.addWidget(logo, alignment=center)
         layout.addStretch(1)
 
@@ -560,9 +541,14 @@ app = QApplication(sys.argv)
 screenSize = app.primaryScreen().size()
 width, height = screenSize.width(), screenSize.height()
 
-fontSizes = (int(width * 0.01), int(width * 0.02), int(width * 0.016))
-styleSheet = Path("./style.qss").read_text()
-app.setStyleSheet(styleSheet % fontSizes)
+def resolve_font_em(qss: str, base: int) -> str:
+    def replacer(m):
+        return f"font-size: {float(m.group(1)) * base:.0f}px"
+    return re.sub(r"font-size:\s*([\d.]+)em", replacer, qss)
+
+baseSize = int(width * 0.01)
+styleSheet = resolve_font_em(Path("./style.qss").read_text(), baseSize)
+app.setStyleSheet(styleSheet % baseSize)
 
 window = Inventory()
 window.showMaximized()

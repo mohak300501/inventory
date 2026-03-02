@@ -4,79 +4,101 @@ QWidget {
     background: white; color: black;
 }
 
-QLineEdit, QComboBox, QDateEdit {
+QDateEdit {
     color: blue;
-    text-align: right;
-}
-
-QGroupBox {
-    color: red;
-}
-
-QLabel#bis, QLabel#drdo {
-    font-weight: bold;
 }
 
 QLabel#title {
-    font-size: %spx;
+    font-size: 2em;
     font-weight: bold;
     color: red;
+    qproperty-alignment: 'AlignCenter';
 }
 
-QLabel#lastUpd {
-    color: blue;
+QLabel#dateSubtitle {
+    font-size: 1.5em;
+    color: #555;
+    qproperty-alignment: 'AlignCenter';
+}
+
+QLabel#redLbl {
+    color: red;
+    font-weight: bold;
+    min-width: 9em;
+    min-height: 2.5em;
+    qproperty-alignment: 'AlignCenter';
+}
+
+QPushButton#menuBluBtn {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #5B8DF6, stop:0.5 #357ABD, stop:1 #2851A3);
+    color: white;
+    border-radius: 0.4em;
+    font-weight: bold;
+    border: none;
+    font-size: 1.4em;
+    min-height: 3.6em;
 }
 
 QPushButton#bluBtn {
     background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
         stop:0 #5B8DF6, stop:0.5 #357ABD, stop:1 #2851A3);
     color: white;
-    padding: 12px 32px;
-    border-radius: 8px;
+    border-radius: 0.4em;
     font-weight: bold;
-    font-size: 1.1em;
     border: none;
+    min-width: 9em;
+    min-height: 2.5em;
 }
-QPushButton#bluBtn:hover {
+QPushButton#bluBtn:hover, QPushButton#menuBluBtn:hover {
     background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
         stop:0 #6CA6FF, stop:0.5 #4A90E2, stop:1 #2E5C9A);
 }
 
 QPushButton#redBtn {
-    background: red; color: white;
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #F65B5B, stop:0.5 #BD3535, stop:1 #A32828);
+    color: white;
+    border-radius: 0.4em;
+    font-weight: bold;
+    border: none;
+    min-width: 9em;
+    min-height: 2.5em;
+}
+QPushButton#redBtn:hover {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #FF6C6C, stop:0.5 #E24A4A, stop:1 #9A2E2E);
 }
 
 #leftPane {
     background: #e0e3ea;
-    border-radius: 24px;
-    padding: 40px 16px;
-    border: 1.5px solid #b0b3ba; /* subtle border for depth */
+    border-radius: 1.5em;
+    padding: 2em 1em;
+    border: 1.5px solid #b0b3ba;
 }
 #leftPane QLabel {
     background: transparent;
 }
-#spicWidget, #bisWidget, #bisWidget QLabel {
-    background: transparent;
-}
-#spicWidget, #bisWidget QLabel#bisLabel1 {
-    font-weight: bold;
-}
 
-QLabel#versionLabel {
-    font-size: 1.2em;
-    color: #555;
-}
-
-QLabel#spicLabel1 {
-    font-size: %spx;
-    color: #1565c0;
-    font-weight: bold;
+QLabel#logo {
+    min-width: 12em;
+    min-height: 12em;
+    max-width: 12em;
+    max-height: 12em;
 }
 
 QLabel#dashboardLabel {
     font-size: 1.4em;
     font-weight: bold;
     color: #333;
-    margin-top: 16px;
+    margin-top: 1em;
     qproperty-alignment: 'AlignLeft';
+}
+
+QTextEdit#remarksEdit {
+    font-family: "Times New Roman";
+}
+
+QTableWidget {
+    font-family: "Times New Roman";
 }
